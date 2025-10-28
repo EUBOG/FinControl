@@ -1,0 +1,23 @@
+[
+  {
+    "model": "finance.category",
+    "pk": 1,
+    "fields": {
+      "name": "Еда"
+    }
+  },
+  {
+    "model": "finance.category",
+    "pk": 2,
+    "fields": {
+      "name": "Транспорт"
+    }
+  },
+  {
+    "model": "finance.category",
+    "pk": 3,
+    "fields": {
+      "name": "Развлечения"
+    }
+  }
+]

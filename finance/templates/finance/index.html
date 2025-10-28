@@ -1,0 +1,27 @@
+<!-- templates/finance/index.html -->
+{% extends "base.html" %} <!-- Наследуемся от base.html -->
+
+{% block title %}FinControl - Главная{% endblock %}
+
+{% block content %} <!-- Начинаем блок content -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4">Добро пожаловать в FinControl!</h1>
+            <p class="lead">Ваш личный помощник в учёте доходов и расходов.</p>
+            <hr class="my-4">
+            <p>Следите за своими финансами через удобный веб-интерфейс или в Telegram.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-center">
+                {% if user.is_authenticated %}
+                    <!-- Если пользователь авторизован -->
+                    <a class="btn btn-primary btn-lg me-md-2" href="{% url 'finance:transaction_create' %}" role="button">Перейти в кабинет</a>
+                {% else %}
+                    <!-- Если пользователь не авторизован -->
+                    <a class="btn btn-primary btn-lg me-md-2" href="{% url 'login' %}" role="button">Войти</a>
+                    <a class="btn btn-outline-secondary btn-lg" href="{% url 'register' %}" role="button">Зарегистрироваться</a>
+                {% endif %}
+                <!-- Ссылка на Telegram-бота -->
+                <a class="btn btn-success btn-lg" href="https://t.me/your_bot_username" target="_blank" role="button">Наш Telegram-бот</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %} <!-- Заканчиваем блок content -->

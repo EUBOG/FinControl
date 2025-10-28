@@ -1,0 +1,202 @@
+<!-- finance/templates/finance/transaction_form.html -->
+{% extends "base.html" %}
+
+{% block title %}FinControl - Добавить операцию{% endblock %}
+
+{% block content %}
+    <h2>Добавить финансовую операцию</h2>
+
+    <!-- Отображение сообщений (например, предупреждение о будущей дате) -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Форма добавления транзакции -->
+    <form method="post">
+        {% csrf_token %} <!-- Обязательно для форм, изменяющих данные -->
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.amount.id_for_label }}" class="form-label">Сумма *</label>
+                {{ form.amount }}
+                {% if form.amount.errors %}
+                    <div class="text-danger">{{ form.amount.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.date.id_for_label }}" class="form-label">Дата операции *</label>
+                {{ form.date }}
+                {% if form.date.errors %}
+                    <div class="text-danger">{{ form.date.errors }}</div>
+                {% endif %}
+                {% if form.date.help_text %}
+                    <div class="form-text">{{ form.date.help_text }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.type.id_for_label }}" class="form-label">Тип операции *</label>
+                {{ form.type }}
+                {% if form.type.errors %}
+                    <div class="text-danger">{{ form.type.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.category.id_for_label }}" class="form-label">Категория *</label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <div class="text-danger">{{ form.category.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.description.id_for_label }}" class="form-label">Описание (необязательно)</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors }}</div>
+            {% endif %}
+            {% if form.description.help_text %}
+                <div class="form-text">{{ form.description.help_text }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить операцию</button>
+    </form>
+
+    <hr>
+
+    <!-- Форма фильтрации (GET-форма, чтобы параметры были в URL) -->
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label for="start_date" class="form-label">Дата от:</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="end_date" class="form-label">Дата до:</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="category" class="form-label">Категория:</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="">Все категории</option>
+                    {% for cat in form.category.field.queryset %}
+                        <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == request.GET.category %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 mb-3 align-self-end">
+                <button type="submit" class="btn btn-outline-secondary w-100">Фильтровать</button>
+            </div>
+        </div>
+        <!-- СКРЫТЫЕ ПОЛЯ ДЛЯ СОХРАНЕНИЯ ОТЧЁТА -->
+        <input type="hidden" name="current_start_date" value="{{ request.GET.start_date }}">
+        <input type="hidden" name="current_end_date" value="{{ request.GET.end_date }}">
+        <input type="hidden" name="current_category" value="{{ request.GET.category }}">
+    </form>
+
+    <!-- Форма для сохранения отчёта -->
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <!-- Передаём текущие параметры фильтрации как hidden поля -->
+        <input type="hidden" name="current_start_date" value="{{ request.GET.start_date }}">
+        <input type="hidden" name="current_end_date" value="{{ request.GET.end_date }}">
+        <input type="hidden" name="current_category" value="{{ request.GET.category }}">
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="save_report_name" class="form-label">Сохранить текущий отчёт как:</label>
+                <input type="text" class="form-control" id="save_report_name" name="save_report_name" placeholder="Введите название">
+            </div>
+            <div class="col-md-2 mb-3 align-self-end">
+                <button type="submit" class="btn btn-outline-primary w-100">Сохранить</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Список сохранённых отчётов -->
+    <h3>Сохранённые отчёты</h3>
+    {% if saved_reports %}
+        <ul class="list-group mb-4">
+            {% for report in saved_reports %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ report.name }}</span>
+                    <div>
+                        <!-- Кнопка "Применить" -->
+                        <button class="btn btn-sm btn-outline-info apply-report-btn" data-report-id="{{ report.id }}">Применить</button>
+                        <!-- Кнопка "Удалить" (опционально) -->
+                        <!-- Функция удаления отчёта не реализована -->
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="mb-4">У вас пока нет сохранённых отчётов.</p>
+    {% endif %}
+
+    <!-- Список последних транзакций (теперь фильтрованный) -->
+    <h3>Последние операции (отфильтрованные)</h3>
+    {% if object_list %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Категория</th>
+                    <th scope="col">Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in object_list %}
+                    <tr>
+                        <td>{{ transaction.date|date:"d.m.Y" }}</td> <!-- Форматирование даты -->
+                        <td>{{ transaction.get_type_display }}</td>
+                        <td style="text-align: right;">{{ transaction.amount }}</td> <!-- Выравнивание суммы -->
+                        <td>{{ transaction.category }}</td>
+                        <td>{{ transaction.description|default:"-" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Пока нет операций, соответствующих фильтрам.</p>
+    {% endif %}
+
+    <!-- Скрипт для кнопки "Применить" -->
+    <script>
+        document.querySelectorAll('.apply-report-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const reportId = this.getAttribute('data-report-id');
+                // Отправляем AJAX-запрос на получение параметров отчёта
+                fetch(`/transactions/load_report/${reportId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest', // Для проверки в Django
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value // CSRF токен
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Заполняем поля формы фильтрации
+                    document.getElementById('start_date').value = data.start_date || '';
+                    document.getElementById('end_date').value = data.end_date || '';
+                    document.getElementById('category').value = data.category || '';
+
+                    // Отправляем форму фильтрации
+                    document.querySelector('form[method="get"]').submit();
+                })
+                .catch(error => console.error('Ошибка при загрузке отчёта:', error));
+            });
+        });
+    </script>
+
+{% endblock content %}

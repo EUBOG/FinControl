@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест выхода</title>
+</head>
+<body>
+    <h2>Тестирование выхода из системы</h2>
+
+    <form method="post" action="http://127.0.0.1:8000/accounts/logout/">
+        {% csrf_token %}
+        <button type="submit">Выйти из системы (POST)</button>
+    </form>
+
+    <p><a href="/">На главную</a></p>
+</body>
+</html>

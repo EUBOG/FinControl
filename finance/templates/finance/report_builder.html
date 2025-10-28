@@ -1,0 +1,155 @@
+<!-- finance/templates/finance/report_builder.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>📊 Генератор отчетов</h1>
+
+    <div class="row">
+        <!-- Быстрые отчеты -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>🚀 Быстрые отчеты</h5>
+                </div>
+                <div class="card-body">
+                    <p>Скачайте готовый отчет за выбранный период:</p>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'finance:quick_reports' %}?type=day&format=pdf"
+                           class="btn btn-outline-primary">
+                            📅 Отчет за день (PDF)
+                        </a>
+                        <a href="{% url 'finance:quick_reports' %}?type=day&format=excel"
+                           class="btn btn-outline-success">
+                            📅 Отчет за день (Excel)
+                        </a>
+
+                        <a href="{% url 'finance:quick_reports' %}?type=week&format=pdf"
+                           class="btn btn-outline-primary">
+                            📊 Отчет за неделю (PDF)
+                        </a>
+                        <a href="{% url 'finance:quick_reports' %}?type=week&format=excel"
+                           class="btn btn-outline-success">
+                            📊 Отчет за неделю (Excel)
+                        </a>
+
+                        <a href="{% url 'finance:quick_reports' %}?type=month&format=pdf"
+                           class="btn btn-outline-primary">
+                            📈 Отчет за месяц (PDF)
+                        </a>
+                        <a href="{% url 'finance:quick_reports' %}?type=month&format=excel"
+                           class="btn btn-outline-success">
+                            📈 Отчет за месяц (Excel)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Настройка отчетов -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>⚙️ Настроить отчет</h5>
+                </div>
+                <div class="card-body">
+                    <form id="report-form" action="{% url 'finance:create_report' %}" method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Название отчета</label>
+                                    <input type="text" name="name" class="form-control"
+                                           value="Мой финансовый отчет" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Формат</label>
+                                    <select name="format" class="form-control">
+                                        <option value="pdf">PDF документ</option>
+                                        <option value="excel">Excel таблица</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Период отчета</label>
+                            <select name="period_type" class="form-control" id="period-type">
+                                <option value="day">За сегодня</option>
+                                <option value="week" selected>За текущую неделю</option>
+                                <option value="month">За текущий месяц</option>
+                                <option value="year">За текущий год</option>
+                                <option value="custom">Произвольный период</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="custom-dates" style="display: none;">
+                            <label class="form-label">Выберите даты</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="date" name="start_date" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="date" name="end_date" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            🎯 Сгенерировать отчет
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Информация о отчетах -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>ℹ️ О отчетах</h5>
+                </div>
+                <div class="card-body">
+                    <h6>PDF отчеты содержат:</h6>
+                    <ul>
+                        <li>Сводную информацию о доходах и расходах</li>
+                        <li>Анализ расходов по категориям</li>
+                        <li>Детальный список операций</li>
+                        <li>Профессиональное оформление</li>
+                    </ul>
+
+                    <h6>Excel отчеты содержат:</h6>
+                    <ul>
+                        <li>Детальные данные на отдельном листе</li>
+                        <li>Сводную статистику</li>
+                        <li>Анализ по категориям с диаграммами</li>
+                        <li>Возможность дальнейшей обработки данных</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const periodType = document.getElementById('period-type');
+    const customDates = document.getElementById('custom-dates');
+
+    periodType.addEventListener('change', function() {
+        customDates.style.display = this.value === 'custom' ? 'block' : 'none';
+    });
+
+    // Устанавливаем даты по умолчанию для произвольного периода
+    const today = new Date().toISOString().split('T')[0];
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];
+
+    document.querySelector('input[name="start_date"]').value = oneMonthAgoStr;
+    document.querySelector('input[name="end_date"]').value = today;
+});
+</script>
+{% endblock %}
