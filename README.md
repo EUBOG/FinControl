@@ -20,30 +20,30 @@ FinControl - это веб-приложение для управления ли
 ```bash
 git clone https://github.com/yourusername/FinControl.git
 cd FinControl
-
+```
 ### 2. Создание виртуального окружения
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # или
 venv\Scripts\activate  # Windows
-
+```
 ### 3. Установка зависимостей
 ```bash
 pip install -r requirements.txt
-
+```
 ### 4. Настройка базы данных
 ```bash
 python manage.py migrate
-
+```
 ### 5. Создание суперпользователя
 ```bash
 python manage.py createsuperuser
-
+```
 ### 6. Запуск сервера
 ```bash
 python manage.py runserver
-
+```
 ### Структура проекта
 FinControl/
 ├── .gitignore
