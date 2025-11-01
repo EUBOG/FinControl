@@ -45,6 +45,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 ### Структура проекта
+```
 FinControl/
 ├── .gitignore
 ├── LICENSE
@@ -60,7 +61,7 @@ FinControl/
 ├── finance/
 ├── templates/
 └── media/
-
+```
 ### Использование
 1. Регистрация и вход - создайте аккаунт или войдите в систему
 2. Добавление операций - укажите доходы и расходы по категориям
