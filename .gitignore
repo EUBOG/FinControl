@@ -3,17 +3,15 @@
 *.pot
 *.pyc
 __pycache__/
+local_settings.py
 db.sqlite3
 media/
 
-# Environment
-.env
-.venv
+# Virtual environment
+.venv/
 env/
 venv/
 ENV/
-env.bak/
-venv.bak/
 
 # IDE
 .vscode/
@@ -23,7 +21,21 @@ venv.bak/
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Database
-*.db
+# Project specific
+reports/
+test_*.pdf
+test_*.xlsx
+
+# Добавляем игнорирование временных файлов Office
+echo "" >> .gitignore
+echo "# Temporary office files" >> .gitignore
+echo "~$*" >> .gitignore
+echo "*.tmp" >> .gitignore
+echo ".~lock.*" >> .gitignore

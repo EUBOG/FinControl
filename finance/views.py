@@ -61,7 +61,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 
         # Проверка даты в будущем и логика подтверждения
         future_date_flag = False
-        if form.instance.date and form.instance.date > datetime.date.today():
+        if form.instance.date and form.instance.date > timezone.now().date():
             messages.warning(self.request, f"Вы указали дату в будущем ({form.instance.date}). Транзакция будет сохранена.")
 
         print("DEBUG: Before calling super().form_valid(form)")

@@ -14,9 +14,12 @@ urlpatterns = [
 
     # Подключаем URL для регистрации
     path('accounts/register/', accounts_views.SignUpView.as_view(), name='register'),
-    path('accounts/logout/', LogoutView.as_view(next_page='login'), name='logout'),
-    # Подключаем остальные URL аутентификации КРОМЕ logout
-    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('accounts/logout/', accounts_views.CustomLogoutView.as_view(), name='logout'),
+
+    # Кастомный логин с нашей формой
+    path('accounts/login/', accounts_views.CustomLoginView.as_view(), name='login'),
+
+    # Подключаем остальные URL аутентификации
     path('accounts/password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('accounts/password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     path('accounts/password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
