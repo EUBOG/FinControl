@@ -8,7 +8,7 @@ from django.db.models import Q # Импортируем Q для фильтра�
 from django.http import HttpResponseRedirect
 from .models import Transaction, Category, SavedReport # Импортируем SavedReport
 from .forms import TransactionForm
-import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -92,14 +92,14 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 
         if start_date:
             try:
-                start_date_obj = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
+                start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date()
                 queryset = queryset.filter(date__gte=start_date_obj)
             except ValueError:
                 pass
 
         if end_date:
             try:
-                end_date_obj = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+                end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date()
                 queryset = queryset.filter(date__lte=end_date_obj)
             except ValueError:
                 pass
