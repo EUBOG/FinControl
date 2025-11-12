@@ -1226,7 +1226,7 @@ async def add_transaction(message: types.Message, state: FSMContext):
             amount=amount,
             date=parsed_date, # <-- Передаём parsed_date вместо datetime.now().date()
             type=transaction_type,
-            category=category,
+            category_id=category.id,
             description=description
         )
         await message.reply(
